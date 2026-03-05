@@ -1,73 +1,51 @@
-# Rollout Canary de ejemplo con argoproj/rollouts-demo.
-#
-# Cómo probar el canary:
-# 1. Desplegar: aplicar este manifiesto (versión estable = blue).
-# 2. Cambiar la imagen a un nuevo color, ej: argoproj/rollouts-demo:yellow
-# 3. Sincronizar (Argo CD o kubectl apply) para que el Rollout detecte el cambio.
-# 4. El canary avanzará por los pasos: 20% -> pausa 30s -> 50% -> pausa 30s -> 100%.
-# 5. Si usas "pause indefinitely" (pause: {}), promover manualmente:
-#    kubectl argo rollouts promote nginx-rollout -n <namespace>
-#
-# Documentación: https://argo-rollouts.readthedocs.io/en/stable/features/canary/
----
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: nginx-rollout
+  name: rollouts-demo
 spec:
-  replicas: 10
+  replicas: 5
+  strategy:
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {}
+      - setWeight: 40
+      - pause: {duration: 10}
+      - setWeight: 60
+      - pause: {duration: 10}
+      - setWeight: 80
+      - pause: {duration: 10}
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: nginx-rollout
+      app: rollouts-demo
   template:
     metadata:
       labels:
-        app: nginx-rollout
+        app: rollouts-demo
     spec:
       containers:
-        - name: rollouts-demo
-          image: argoproj/rollouts-demo:yellow
-          ports:
-            - containerPort: 8080
-          resources:
-            requests:
-              memory: "32Mi"
-              cpu: "10m"
-            limits:
-              memory: "64Mi"
-              cpu: "50m"
-  minReadySeconds: 10
-  revisionHistoryLimit: 3
-  strategy:
-    canary:
-      canaryService: nginx-rollout-service
-      steps:
-        - setWeight: 20
-        - pause:
-            duration: 5m
-        - setWeight: 40
-        - pause:
-            duration: 10m
-        - setWeight: 70
-        - pause: 
-            duration: 30m
-        - setWeight: 100
-        - pause: 
-            duration: 1h
+      - name: rollouts-demo
+        image: argoproj/rollouts-demo:blue
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        resources:
+          requests:
+            memory: 32Mi
+            cpu: 5m
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-rollout-service
-  labels:
-    app: nginx-rollout
+  name: rollouts-demo
 spec:
-  type: ClusterIP
   ports:
-    - port: 80
-      targetPort: 8080
-      protocol: TCP
-      name: http
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
   selector:
-    app: nginx-rollout
+    app: rollouts-demo
