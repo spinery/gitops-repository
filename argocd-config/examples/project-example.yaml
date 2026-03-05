@@ -7,12 +7,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: my-team
+  name: my-project
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  description: "Proyecto de ejemplo para el equipo (my-team)"
+  description: "Proyecto de ejemplo para el equipo (my-project)"
 
   # Repositorios Git desde los que las Applications de este proyecto pueden sincronizar.
   # Patrones con * permiten múltiples repos.
@@ -24,7 +24,7 @@ spec:
   # server: https://kubernetes.default.svc es el cluster donde corre Argo CD (in-cluster).
   destinations:
     - server: "https://kubernetes.default.svc"
-      namespace: "my-team-*"
+      namespace: "my-project-*"
     - server: "https://kubernetes.default.svc"
       namespace: "default"
 
@@ -48,6 +48,6 @@ spec:
   #   - name: developer
   #     description: Puede sincronizar apps
   #     policies:
-  #       - p, proj:my-team:developer, applications, get, my-team/*, allow
+  #       - p, proj:my-project:developer, applications, get, my-project/*, allow
   #     groups:
   #       - developers
