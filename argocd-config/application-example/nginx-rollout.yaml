@@ -40,7 +40,7 @@ spec:
   revisionHistoryLimit: 3
   strategy:
     canary:
-      canaryService: nginx-rollout
+      canaryService: nginx-rollout-service
       steps:
         - setWeight: 20
         - pause:
@@ -59,7 +59,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-rollout
+  name: nginx-rollout-service
   labels:
     app: nginx-rollout
 spec:
