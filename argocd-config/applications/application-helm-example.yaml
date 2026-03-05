@@ -19,7 +19,7 @@ spec:
   source:
     repoURL: "https://charts.bitnami.com/bitnami"
     chart: "nginx"
-    targetRevision: "16"
+    targetRevision: "22.6.0"
 
     helm:
       releaseName: "nginx-demo"
