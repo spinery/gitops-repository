@@ -1,0 +1,53 @@
+# Ejemplo de AppProject en Argo CD.
+# Los proyectos agrupan aplicaciones y restringen repositorios, clusters y namespaces permitidos.
+# Documentación: https://argo-cd.readthedocs.io/en/stable/user-guide/projects/
+#
+# Aplicar: kubectl apply -n argocd -f argocd-config/examples/project-example.yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: my-team
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: "Proyecto de ejemplo para el equipo (my-team)"
+
+  # Repositorios Git desde los que las Applications de este proyecto pueden sincronizar.
+  # Patrones con * permiten múltiples repos.
+  sourceRepos:
+    - "https://github.com/mi-org/*"
+    - "git@github.com:mi-org/*.git"
+
+  # Destinos permitidos: cluster (server o name) + namespace.
+  # server: https://kubernetes.default.svc es el cluster donde corre Argo CD (in-cluster).
+  destinations:
+    - server: "https://kubernetes.default.svc"
+      namespace: "my-team-*"
+    - server: "https://kubernetes.default.svc"
+      namespace: "default"
+
+  # Recursos a nivel de cluster que las apps pueden gestionar (Deployment, Namespace, etc.).
+  clusterResourceWhitelist:
+    - group: ""
+      kind: "Namespace"
+    - group: ""
+      kind: "ResourceQuota"
+
+  # Recursos a nivel de namespace permitidos (por defecto permite los habituales).
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
+
+  # Orígenes permitidos para Helm (repositorios de charts).
+  # sourceNamespaces: []
+
+  # Roles de proyecto (opcional): permisos dentro del proyecto.
+  # roles:
+  #   - name: developer
+  #     description: Puede sincronizar apps
+  #     policies:
+  #       - p, proj:my-team:developer, applications, get, my-team/*, allow
+  #     groups:
+  #       - developers

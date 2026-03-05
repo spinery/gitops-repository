@@ -1,0 +1,58 @@
+# Ejemplo de Secret para registrar clusters en Argo CD.
+# Argo CD descubre los Secrets con la etiqueta argocd.argoproj.io/secret-type: cluster.
+# Documentación: https://argo-cd.readthedocs.io/en/stable/user-guide/clusters/
+#
+# El cluster donde corre Argo CD (in-cluster) ya está registrado por defecto como
+# https://kubernetes.default.svc. Estos ejemplos sirven para añadir el mismo cluster
+# con otro nombre o clusters externos.
+#
+# Aplicar: kubectl apply -n argocd -f argocd-config/examples/cluster-example.yaml
+---
+# --- Cluster local (el mismo donde está Argo CD) con nombre amigable ---
+# Útil para referenciarlo por nombre en AppProjects o ApplicationSet.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cluster-in-cluster
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+stringData:
+  name: "in-cluster"
+  server: "https://kubernetes.default.svc"
+  config: |
+    {
+      "tlsClientConfig": {
+        "insecure": false
+      }
+    }
+---
+# --- Cluster externo (ejemplo: otro Kind o cluster remoto) ---
+# Obtén el server y el token/certificado del kubeconfig del cluster a añadir.
+# Ejemplo para un segundo cluster Kind llamado "kind-dev":
+#
+# kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}' --context kind-kind-dev
+# kubectl get secret -n argocd -o name | xargs -I {} kubectl get {} -n argocd -o json | ...
+#
+# O usa: argocd cluster add <context-name> (genera el Secret por ti).
+#
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: cluster-kind-dev
+#   namespace: argocd
+#   labels:
+#     argocd.argoproj.io/secret-type: cluster
+# stringData:
+#   name: "kind-dev"
+#   server: "https://127.0.0.1:6443"
+#   config: |
+#     {
+#       "tlsClientConfig": {
+#         "insecure": true,
+#         "caData": "",
+#         "certData": "",
+#         "keyData": ""
+#       },
+#       "bearerToken": "TOKEN_DEL_SERVICE_ACCOUNT"
+#     }

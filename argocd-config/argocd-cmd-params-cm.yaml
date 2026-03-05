@@ -1,0 +1,21 @@
+# Parámetros de línea de comandos para los componentes de Argo CD (argocd-cmd-params-cm).
+# Útil para desarrollo (server.insecure) o ajustes de rendimiento.
+# Documentación: https://argo-cd.readthedocs.io/en/stable/operator-manual/argocd-cmd-params-cm-yaml/
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cmd-params-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  # Descomenta para servir la UI por HTTP (sin TLS). Útil en entornos locales con port-forward.
+  # server.insecure: "true"
+
+  # Descomenta para deshabilitar la compresión de respuestas (debug).
+  # server.disable.auth: "false"
+
+  # Tiempo de caché del repo server (opcional).
+  # server.repo.cache.expiration: "24h"

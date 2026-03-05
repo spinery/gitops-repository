@@ -1,0 +1,50 @@
+# Ejemplo de Secret para registrar un repositorio Git en Argo CD.
+# Argo CD descubre los Secrets con la etiqueta argocd.argoproj.io/secret-type: repository.
+# Documentación: https://argo-cd.readthedocs.io/en/stable/operator-manual/argocd-repositories-yaml/
+#
+# IMPORTANTE: Sustituye URL, usuario y contraseña (o usa SSH). No subas credenciales reales a Git.
+# Aplicar: kubectl apply -n argocd -f argocd-config/examples/repository-example.yaml
+---
+# --- Repositorio HTTPS (usuario/contraseña) ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: repo-github-mi-org
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  url: "https://github.com/mi-org/mi-repo.git"
+  username: "git"
+  password: "REEMPLAZA_CON_TOKEN_O_PASSWORD"
+  # Opcional: omitir verificación TLS (solo para pruebas).
+  # insecure: "true"
+---
+# --- Repositorio HTTPS (solo URL, sin auth - público) ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: repo-public-example
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  url: "https://github.com/argoproj/argocd-example-apps.git"
+  # Sin username/password para repos públicos.
+---
+# --- Repositorio SSH (descomenta y rellena si usas SSH) ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: repo-ssh-mi-org
+#   namespace: argocd
+#   labels:
+#     argocd.argoproj.io/secret-type: repository
+# stringData:
+#   url: "git@github.com:mi-org/mi-repo.git"
+#   sshPrivateKey: |
+#     -----BEGIN OPENSSH PRIVATE KEY-----
+#     ... contenido de tu clave privada ...
+#     -----END OPENSSH PRIVATE KEY-----
+#   # Opcional: no verificar host key (solo para pruebas).
+#   # insecure: "true"

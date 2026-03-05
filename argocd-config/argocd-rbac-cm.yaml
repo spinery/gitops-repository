@@ -1,0 +1,25 @@
+# ConfigMap de RBAC de Argo CD (argocd-rbac-cm).
+# Define políticas de acceso por defecto.
+# Documentación: https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-rbac-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  # Política por defecto para usuarios no anónimos: role:readonly o role:admin.
+  # policy.default: role:readonly
+
+  # Ejemplo: permitir a un grupo de scopes (si usas OIDC/SSO).
+  # policy.csv: |
+  #   p, role:org-admin, applications, *, */*, allow
+  #   p, role:org-admin, clusters, *, *, allow
+  #   p, role:org-admin, repositories, *, *, allow
+  #   g, mi-grupo, role:org-admin
+  # policy.default: role:readonly
+  #
+  # Sin configurar: por defecto solo admin tiene acceso (usuario local admin).

@@ -1,0 +1,57 @@
+# ConfigMap principal de Argo CD (argocd-cm).
+# Aplica en el namespace argocd después de instalar Argo CD.
+# Documentación: https://argo-cd.readthedocs.io/en/stable/operator-manual/argocd-cm-yaml/
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  # Tiempo de espera para reconciliación (opcional). Por defecto ~2 min.
+  # timeout.reconciliation: "180s"
+
+  # Duración de la sesión de usuario (opcional).
+  # users.session.duration: "24h"
+
+  # --- Integración con Argo Rollouts ---
+  # Health check para que Argo CD entienda el estado de los Rollouts en la UI.
+  resource.customizations.health.argoproj.io_Rollout: |
+    hs = {}
+    hs.status = "Progressing"
+    hs.message = ""
+    if obj.status ~= nil then
+      if obj.status.phase ~= nil then
+        hs.status = obj.status.phase
+        if obj.status.message ~= nil then
+          hs.message = obj.status.message
+        end
+      end
+    end
+    return hs
+
+  # Acciones en la UI para Rollouts (Resume y Restart desde el menú de recursos).
+  resource.customizations.actions.argoproj.io_Rollout: |
+    discovery.lua: |
+      actions = {}
+      actions["resume"] = {}
+      actions["restart"] = {}
+      return actions
+    definitions:
+      - name: resume
+        action.lua: |
+          if obj.spec.paused == nil then
+            obj.spec.paused = {}
+          end
+          obj.spec.paused = false
+          return obj
+      - name: restart
+        action.lua: |
+          if obj.spec.restartAt == nil then
+            obj.spec.restartAt = "2020-01-01T00:00:00Z"
+          end
+          obj.spec.restartAt = os.date("!%Y-%m-%dT%H:%M:%SZ")
+          return obj
