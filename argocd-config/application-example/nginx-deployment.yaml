@@ -1,21 +1,18 @@
-# Deployment de ejemplo: Nginx básico.
-# Puede usarse como source.path en una Application de Argo CD que apunte a este directorio.
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  name: nginx-manifests
   labels:
-    app: nginx
+    app: nginx-manifests
 spec:
   replicas: 0
   selector:
     matchLabels:
-      app: nginx
+      app: nginx-manifests
   template:
     metadata:
       labels:
-        app: nginx
+        app: nginx-manifests
     spec:
       containers:
         - name: nginx
@@ -33,9 +30,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx
+  name: nginx-manifests
   labels:
-    app: nginx
+    app: nginx-manifests
 spec:
   type: ClusterIP
   ports:
@@ -44,4 +41,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: nginx
+    app: nginx-manifests
