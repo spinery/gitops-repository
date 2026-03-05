@@ -44,16 +44,16 @@ spec:
       steps:
         - setWeight: 20
         - pause:
-            duration: 60s
+            duration: 5m
         - setWeight: 40
         - pause:
-            duration: 60s
+            duration: 10m
         - setWeight: 70
         - pause: 
-            duration: 60s
+            duration: 30m
         - setWeight: 100
         - pause: 
-            duration: 60s
+            duration: 1h
 
 ---
 apiVersion: v1
