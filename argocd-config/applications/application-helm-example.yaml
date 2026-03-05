@@ -24,7 +24,7 @@ spec:
     helm:
       releaseName: "nginx-demo"
       values: |
-        replicaCount: 0
+        replicaCount: 5
         service:
           type: ClusterIP
           port: 80
