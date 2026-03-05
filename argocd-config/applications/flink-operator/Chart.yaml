@@ -1,0 +1,9 @@
+# Chart wrapper para desplegar Flink Kubernetes Operator con values desde este repo.
+# La dependencia se resuelve desde el repositorio Helm de Apache (registrar en Argo CD si aplica).
+apiVersion: v2
+name: flink-operator
+version: "0.1.0"
+dependencies:
+  - name: flink-kubernetes-operator
+    version: "1.13.0"
+    repository: "https://downloads.apache.org/flink/flink-kubernetes-operator-1.13.0"

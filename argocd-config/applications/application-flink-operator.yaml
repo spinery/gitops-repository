@@ -1,7 +1,8 @@
 # Argo CD Application para el Flink Kubernetes Operator (Helm).
-# Chart: https://downloads.apache.org/flink/flink-kubernetes-operator-1.13.0/
+# El chart se obtiene vía dependencia; los values están en flink-operator/values.yaml.
 #
-# Requisito: registrar el repositorio Helm en Argo CD (ver examples/repository-helm-flink.yaml).
+# Requisito: el repositorio Git debe estar registrado en Argo CD.
+# Para resolver la dependencia Helm, registrar el repo (repositories/repository-helm-flink.yaml).
 # Aplicar: kubectl apply -n argocd -f argocd-config/applications/application-flink-operator.yaml
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -15,40 +16,13 @@ spec:
   project: default
 
   source:
-    repoURL: "https://downloads.apache.org/flink/flink-kubernetes-operator-1.13.0"
-    chart: flink-kubernetes-operator
-    targetRevision: "1.13.0"
+    repoURL: "https://github.com/spinery/gitops-repository.git"
+    targetRevision: "HEAD"
+    path: "argocd-config/applications/flink-operator"
 
     helm:
       releaseName: flink-kubernetes-operator
-      values: |
-        version: "1.13.0"
-
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "1Gi"
-          limits:
-            memory: "8Gi"
-
-        flinkConfiguration:
-          log4j-operator.properties: |
-            rootLogger.level = DEBUG
-            logger.operator.name = org.apache.flink.kubernetes.operator
-            logger.operator.level = DEBUG
-
-        operatorServiceAccount:
-          create: true
-          # Ajusta al ServiceAccount que uses en tu cluster (ej. el de common-config)
-          name: flink-sa
-
-        jobServiceAccount:
-          create: true
-          name: flink-sa-job
-
-        # Deshabilitar webhook para evitar problemas con certificados TLS
-        webhook:
-          create: false
+      # values se toman de flink-operator/values.yaml en el path anterior
 
   destination:
     server: "https://kubernetes.default.svc"

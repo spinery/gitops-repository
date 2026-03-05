@@ -1,0 +1,30 @@
+# Values para Flink Kubernetes Operator (subchart flink-kubernetes-operator).
+# Ajusta operatorServiceAccount.name y jobServiceAccount.name al SA de tu cluster.
+---
+flink-kubernetes-operator:
+  version: "1.13.0"
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "1Gi"
+    limits:
+      memory: "8Gi"
+
+  flinkConfiguration:
+    log4j-operator.properties: |
+      rootLogger.level = DEBUG
+      logger.operator.name = org.apache.flink.kubernetes.operator
+      logger.operator.level = DEBUG
+
+  operatorServiceAccount:
+    create: false
+    name: flink-sa
+
+  jobServiceAccount:
+    create: false
+    name: flink-sa
+
+  # Deshabilitar webhook para evitar problemas con certificados TLS
+  webhook:
+    create: false
