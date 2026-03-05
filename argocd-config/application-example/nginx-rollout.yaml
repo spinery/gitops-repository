@@ -8,13 +8,13 @@ spec:
     canary:
       steps:
       - setWeight: 20
-      - pause: {}
+      - pause: { duration: 60s }
       - setWeight: 40
-      - pause: {duration: 10}
+      - pause: {duration: 2m}
       - setWeight: 60
-      - pause: {duration: 10}
+      - pause: {duration: 5m}
       - setWeight: 80
-      - pause: {duration: 10}
+      - pause: {duration: 10m}
   revisionHistoryLimit: 2
   selector:
     matchLabels:
