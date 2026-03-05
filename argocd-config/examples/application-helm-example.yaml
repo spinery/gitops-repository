@@ -23,20 +23,8 @@ spec:
 
     helm:
       releaseName: "nginx-demo"
-
-      # Opción 1: parámetros individuales (equivalente a helm --set). Útil para pocas variables.
-      # parameters:
-      #   - name: "replicaCount"
-      #     value: "2"
-      #   - name: "service.type"
-      #     value: "ClusterIP"
-      #   - name: "ingress.enabled"
-      #     value: "true"
-      #     forceString: true
-
-      # Opción 2: bloque values (YAML). Recomendado para muchas variables en la config del Application.
       values: |
-        replicaCount: 2
+        replicaCount: 1
         service:
           type: ClusterIP
           port: 80

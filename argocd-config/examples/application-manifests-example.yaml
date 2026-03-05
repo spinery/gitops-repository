@@ -8,7 +8,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: my-example
+  name: my-nginx
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -22,7 +22,7 @@ spec:
 
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: "my-example"
+    namespace: "my-nginx"
 
   syncPolicy:
     automated:
