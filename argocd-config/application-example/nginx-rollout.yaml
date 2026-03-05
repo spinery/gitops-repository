@@ -42,11 +42,18 @@ spec:
     canary:
       canaryService: nginx-rollout
       steps:
+        - setWeight: 25
+        - pause:
+            duration: 60s
         - setWeight: 50
         - pause:
-            duration: 120s
+            duration: 60s
+        - setWeight: 75
+        - pause: 
+            duration: 60s
         - setWeight: 100
-        - pause: {}
+        - pause: 
+            duration: 60s
 
 ---
 apiVersion: v1
