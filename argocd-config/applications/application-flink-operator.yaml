@@ -1,0 +1,68 @@
+# Argo CD Application para el Flink Kubernetes Operator (Helm).
+# Chart: https://downloads.apache.org/flink/flink-kubernetes-operator-1.13.0/
+#
+# Requisito: registrar el repositorio Helm en Argo CD (ver examples/repository-helm-flink.yaml).
+# Aplicar: kubectl apply -n argocd -f argocd-config/applications/application-flink-operator.yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: flink-kubernetes-operator
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: "https://downloads.apache.org/flink/flink-kubernetes-operator-1.13.0"
+    chart: flink-kubernetes-operator
+    targetRevision: "1.13.0"
+
+    helm:
+      releaseName: flink-kubernetes-operator
+      values: |
+        version: "1.13.0"
+
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "1Gi"
+          limits:
+            memory: "8Gi"
+
+        flinkConfiguration:
+          log4j-operator.properties: |
+            rootLogger.level = DEBUG
+            logger.operator.name = org.apache.flink.kubernetes.operator
+            logger.operator.level = DEBUG
+
+        operatorServiceAccount:
+          create: false
+          # Ajusta al ServiceAccount que uses en tu cluster (ej. el de common-config)
+          name: flink-sa
+
+        jobServiceAccount:
+          create: false
+          name: flink-sa
+
+        # Deshabilitar webhook para evitar problemas con certificados TLS
+        webhook:
+          create: false
+
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: flink-operator
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

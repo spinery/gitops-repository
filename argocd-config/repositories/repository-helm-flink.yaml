@@ -1,0 +1,16 @@
+# Repositorio Helm para el Flink Kubernetes Operator (Apache).
+# Sin autenticación (repositorio público).
+# Aplicar antes que la Application de Flink si Argo CD no resuelve el chart:
+#   kubectl apply -n argocd -f argocd-config/examples/repository-helm-flink.yaml
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: repo-helm-flink
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: helm
+  name: flink-kubernetes-operator
+  url: https://downloads.apache.org/flink/flink-kubernetes-operator-1.13.0
