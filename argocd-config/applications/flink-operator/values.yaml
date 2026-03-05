@@ -18,7 +18,7 @@ flink-kubernetes-operator:
       logger.operator.level = DEBUG
 
   operatorServiceAccount:
-    create: false
+    create: true
     name: flink-sa
 
   jobServiceAccount:
