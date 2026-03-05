@@ -40,7 +40,7 @@ spec:
   revisionHistoryLimit: 3
   strategy:
     canary:
-      canaryService: nginx-rollout-service
+      canaryService: nginx-rollout
       steps:
         - setWeight: 50
         - pause:
