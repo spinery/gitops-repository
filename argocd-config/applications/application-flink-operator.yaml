@@ -38,12 +38,12 @@ spec:
             logger.operator.level = DEBUG
 
         operatorServiceAccount:
-          create: false
+          create: true
           # Ajusta al ServiceAccount que uses en tu cluster (ej. el de common-config)
           name: flink-sa
 
         jobServiceAccount:
-          create: false
+          create: true
           name: flink-sa
 
         # Deshabilitar webhook para evitar problemas con certificados TLS
