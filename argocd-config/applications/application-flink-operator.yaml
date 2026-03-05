@@ -44,7 +44,7 @@ spec:
 
         jobServiceAccount:
           create: true
-          name: flink-sa
+          name: flink-sa-job
 
         # Deshabilitar webhook para evitar problemas con certificados TLS
         webhook:
