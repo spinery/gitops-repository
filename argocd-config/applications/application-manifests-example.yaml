@@ -1,39 +1,39 @@
-# Ejemplo de Application que sincroniza manifiestos desde un repositorio Git.
-# El repo puede contener YAML plano, Kustomize o un directorio con múltiples recursos.
-# Documentación: https://argo-cd.readthedocs.io/en/stable/user-guide/application-specification/
-#
-# Requisito: el repositorio debe estar registrado en Argo CD (ej. examples/repository-example.yaml).
-# Aplicar: kubectl apply -n argocd -f argocd-config/examples/application-manifests-example.yaml
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: my-nginx
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  project: default
+# # Ejemplo de Application que sincroniza manifiestos desde un repositorio Git.
+# # El repo puede contener YAML plano, Kustomize o un directorio con múltiples recursos.
+# # Documentación: https://argo-cd.readthedocs.io/en/stable/user-guide/application-specification/
+# #
+# # Requisito: el repositorio debe estar registrado en Argo CD (ej. examples/repository-example.yaml).
+# # Aplicar: kubectl apply -n argocd -f argocd-config/examples/application-manifests-example.yaml
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: my-nginx
+#   namespace: argocd
+#   finalizers:
+#     - resources-finalizer.argocd.argoproj.io
+# spec:
+#   project: default
 
-  source:
-    repoURL: "https://github.com/spinery/gitops-repository.git"
-    targetRevision: "HEAD"
-    path: "argocd-config/application-example"
+#   source:
+#     repoURL: "https://github.com/spinery/gitops-repository.git"
+#     targetRevision: "HEAD"
+#     path: "argocd-config/application-example"
 
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: "nginx-manifests"
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: "nginx-manifests"
 
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-      - PruneLast=true
-    retry:
-      limit: 5
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
+#       - PruneLast=true
+#     retry:
+#       limit: 5
+#       backoff:
+#         duration: 5s
+#         factor: 2
+#         maxDuration: 3m

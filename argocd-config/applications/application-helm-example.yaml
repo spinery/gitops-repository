@@ -1,61 +1,61 @@
-# Ejemplo de Application que despliega un Helm chart con variables en la spec.
-# Las variables se definen en source.helm.parameters (equivalente a --set) o en source.helm.values (YAML).
-# Documentación: https://argo-cd.readthedocs.io/en/stable/user-guide/application-specification/
-# Parámetros Helm: https://argo-cd.readthedocs.io/en/stable/user-guide/parameters/
-#
-# Este ejemplo usa el chart "nginx" de Bitnami desde un repo Helm.
-# Aplicar: kubectl apply -n argocd -f argocd-config/examples/application-helm-example.yaml
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: nginx-helm
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  project: default
+# # Ejemplo de Application que despliega un Helm chart con variables en la spec.
+# # Las variables se definen en source.helm.parameters (equivalente a --set) o en source.helm.values (YAML).
+# # Documentación: https://argo-cd.readthedocs.io/en/stable/user-guide/application-specification/
+# # Parámetros Helm: https://argo-cd.readthedocs.io/en/stable/user-guide/parameters/
+# #
+# # Este ejemplo usa el chart "nginx" de Bitnami desde un repo Helm.
+# # Aplicar: kubectl apply -n argocd -f argocd-config/examples/application-helm-example.yaml
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: nginx-helm
+#   namespace: argocd
+#   finalizers:
+#     - resources-finalizer.argocd.argoproj.io
+# spec:
+#   project: default
 
-  source:
-    repoURL: "https://charts.bitnami.com/bitnami"
-    chart: "nginx"
-    targetRevision: "22.6.0"
+#   source:
+#     repoURL: "https://charts.bitnami.com/bitnami"
+#     chart: "nginx"
+#     targetRevision: "22.6.0"
 
-    helm:
-      releaseName: "nginx-helm"
-      values: |
-        replicaCount: 0
-        service:
-          type: ClusterIP
-          port: 80
-        ingress:
-          enabled: false
-          hostname: nginx-demo.local
-          ingressClassName: nginx
-        resources:
-          requests:
-            memory: 128Mi
-            cpu: 100m
-          limits:
-            memory: 256Mi
-            cpu: 200m
-        # Podemos combinar: descomenta "parameters" arriba y usa values para el resto.
-        # podLabels:
-        #   app.kubernetes.io/part-of: demo
+#     helm:
+#       releaseName: "nginx-helm"
+#       values: |
+#         replicaCount: 0
+#         service:
+#           type: ClusterIP
+#           port: 80
+#         ingress:
+#           enabled: false
+#           hostname: nginx-demo.local
+#           ingressClassName: nginx
+#         resources:
+#           requests:
+#             memory: 128Mi
+#             cpu: 100m
+#           limits:
+#             memory: 256Mi
+#             cpu: 200m
+#         # Podemos combinar: descomenta "parameters" arriba y usa values para el resto.
+#         # podLabels:
+#         #   app.kubernetes.io/part-of: demo
 
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: "nginx-helm"
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: "nginx-helm"
 
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-    retry:
-      limit: 5
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
+#     retry:
+#       limit: 5
+#       backoff:
+#         duration: 5s
+#         factor: 2
+#         maxDuration: 3m
