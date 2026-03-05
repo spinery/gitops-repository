@@ -22,9 +22,9 @@ spec:
     targetRevision: "22.6.0"
 
     helm:
-      releaseName: "nginx-demo"
+      releaseName: "nginx-helm"
       values: |
-        replicaCount: 5
+        replicaCount: 0
         service:
           type: ClusterIP
           port: 80
