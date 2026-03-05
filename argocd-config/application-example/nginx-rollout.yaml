@@ -1,9 +1,21 @@
+# Rollout Canary de ejemplo con argoproj/rollouts-demo.
+#
+# Cómo probar el canary:
+# 1. Desplegar: aplicar este manifiesto (versión estable = blue).
+# 2. Cambiar la imagen a un nuevo color, ej: argoproj/rollouts-demo:yellow
+# 3. Sincronizar (Argo CD o kubectl apply) para que el Rollout detecte el cambio.
+# 4. El canary avanzará por los pasos: 20% -> pausa 30s -> 50% -> pausa 30s -> 100%.
+# 5. Si usas "pause indefinitely" (pause: {}), promover manualmente:
+#    kubectl argo rollouts promote nginx-rollout -n <namespace>
+#
+# Documentación: https://argo-rollouts.readthedocs.io/en/stable/features/canary/
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: nginx-rollout
 spec:
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       app: nginx-rollout
@@ -13,24 +25,34 @@ spec:
         app: nginx-rollout
     spec:
       containers:
-        - name: nginx
-          image: nginx:latest
+        - name: rollouts-demo
+          image: argoproj/rollouts-demo:blue
           ports:
             - containerPort: 80
-  minReadySeconds: 30
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "10m"
+            limits:
+              memory: "64Mi"
+              cpu: "50m"
+  minReadySeconds: 10
   revisionHistoryLimit: 3
   strategy:
-    canary: #Indicates that the rollout should use the Canary strategy
-      maxSurge: '25%'
+    canary:
+      maxSurge: "25%"
       maxUnavailable: 0
       steps:
-        - setWeight: 10
-        - pause:
-            duration: 1h # 1 hour
         - setWeight: 20
-        - pause: {} # pause indefinitely
+        - pause:
+            duration: 30s
+        - setWeight: 50
+        - pause:
+            duration: 30s
+        - setWeight: 100
+        - pause:
+            duration: 10s
 
----
 ---
 apiVersion: v1
 kind: Service
