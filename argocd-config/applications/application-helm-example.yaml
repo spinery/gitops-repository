@@ -29,7 +29,7 @@ spec:
           type: ClusterIP
           port: 80
         ingress:
-          enabled: true
+          enabled: false
           hostname: nginx-demo.local
           ingressClassName: nginx
         resources:
