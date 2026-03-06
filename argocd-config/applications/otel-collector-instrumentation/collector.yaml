@@ -2,7 +2,7 @@
 # Ajusta receivers/processors/exporters según tu backend (Jaeger, OTLP, etc.).
 # Doc: https://opentelemetry.io/docs/collector/configuration/
 ---
-apiVersion: opentelemetry.io/v1beta1
+apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
   name: otel-collector

@@ -3,7 +3,7 @@
 # recibirán el agente y enviarán telemetría al Collector.
 # Doc: https://opentelemetry.io/docs/platforms/kubernetes/operator/automatic/
 ---
-apiVersion: opentelemetry.io/v1beta1
+apiVersion: opentelemetry.io/v1alpha1
 kind: Instrumentation
 metadata:
   name: default-instrumentation
