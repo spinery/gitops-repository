@@ -1,0 +1,6 @@
+# Values para cert-manager (subchart cert-manager).
+# Documentación: https://cert-manager.io/docs/
+---
+cert-manager:
+  crds:
+    enabled: true

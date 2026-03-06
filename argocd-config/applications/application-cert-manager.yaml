@@ -1,0 +1,42 @@
+# Argo CD Application para cert-manager (Helm).
+# El chart se obtiene vía dependencia; los values están en cert-manager/values.yaml.
+#
+# Requisito: el repositorio Git debe estar registrado en Argo CD.
+# Para resolver la dependencia Helm, registrar el repo (repositories/repository-helm-jetstack.yaml).
+# Aplicar: kubectl apply -n argocd -f argocd-config/applications/application-cert-manager.yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: "https://github.com/spinery/gitops-repository.git"
+    targetRevision: "HEAD"
+    path: "argocd-config/applications/cert-manager"
+
+    helm:
+      releaseName: cert-manager
+      # values se toman de cert-manager/values.yaml en el path anterior
+
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: cert-manager
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
