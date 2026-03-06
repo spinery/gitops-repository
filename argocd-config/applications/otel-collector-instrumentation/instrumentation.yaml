@@ -1,0 +1,25 @@
+# Instrumentation: configura la auto-instrumentación para pods en este namespace.
+# Los pods con la anotación instrumentation.opentelemetry.io/inject: "true"
+# recibirán el agente y enviarán telemetría al Collector.
+# Doc: https://opentelemetry.io/docs/platforms/kubernetes/operator/automatic/
+---
+apiVersion: opentelemetry.io/v1beta1
+kind: Instrumentation
+metadata:
+  name: default-instrumentation
+  namespace: observability
+spec:
+  exporter:
+    endpoint: http://otel-collector-collector.observability.svc.cluster.local:4318
+  propagators:
+    - tracecontext
+    - baggage
+  sampler:
+    type: parentbased_traceidratio
+    argument: "1"
+  # Descomenta y ajusta el runtime que uses (java, python, nodejs, go, dotnet)
+  # java: {}
+  # python: {}
+  # nodejs: {}
+  # go: {}
+  # dotnet: {}
