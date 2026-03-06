@@ -1,0 +1,42 @@
+# Argo CD Application para OpenTelemetry Operator (Helm).
+# El chart se obtiene vía dependencia; los values están en opentelemetry-operator/values.yaml.
+#
+# Requisito: el repositorio Git debe estar registrado en Argo CD.
+# Para resolver la dependencia Helm, registrar el repo (repositories/repository-helm-opentelemetry.yaml).
+# Aplicar: kubectl apply -n argocd -f argocd-config/applications/application-opentelemetry-operator.yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opentelemetry-operator
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: "https://github.com/spinery/gitops-repository.git"
+    targetRevision: "HEAD"
+    path: "argocd-config/applications/opentelemetry-operator"
+
+    helm:
+      releaseName: opentelemetry-operator
+      # values se toman de opentelemetry-operator/values.yaml en el path anterior
+
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: opentelemetry-operator-system
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

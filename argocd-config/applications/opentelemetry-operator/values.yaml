@@ -1,0 +1,13 @@
+# Values para OpenTelemetry Operator (subchart opentelemetry-operator).
+# Documentación: https://github.com/open-telemetry/opentelemetry-helm-charts/tree/main/charts/opentelemetry-operator
+---
+opentelemetry-operator:
+  # Imagen del Collector recomendada en la documentación oficial
+  manager:
+    collectorImage:
+      repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s
+
+  # Usar cert-manager para el certificado TLS del webhook (requiere cert-manager instalado)
+  admissionWebhooks:
+    certManager:
+      enabled: true

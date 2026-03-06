@@ -1,0 +1,10 @@
+# Chart wrapper para desplegar OpenTelemetry Operator con values desde este repo.
+# La dependencia se resuelve desde el repositorio Helm de OpenTelemetry (registrar en Argo CD si aplica).
+# https://github.com/open-telemetry/opentelemetry-helm-charts/tree/main/charts/opentelemetry-operator
+apiVersion: v2
+name: opentelemetry-operator
+version: "0.1.0"
+dependencies:
+  - name: opentelemetry-operator
+    version: "0.106.0"
+    repository: "https://open-telemetry.github.io/opentelemetry-helm-charts"
